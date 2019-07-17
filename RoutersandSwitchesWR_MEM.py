@@ -9,22 +9,21 @@ import getpass
 
 
 devices = '''
-192.168.1.1
-192.168.1.2
+10.1.8.1
 '''.strip().splitlines()
 
-device_type = 'cisco_ios'
+device_type = 'cisco_asa'
 
 for device in devices:
     print('~' * 79)
     print('Connecting to device:' + device)
-    username = raw_input('Username: ')
+    username = input('Username: ')
     password = getpass.getpass()
     connection = netmiko.ConnectHandler(ip=device, device_type=device_type, username=username, password=password,
                                         secret="")
     print(connection.send_command('show clock'))
-    # connection.config_mode()
-    # connection.send_command('ip name-server 10.200.10.22')
+    #connection.config_mode()
+    connection.send_command('copy running-config tftp:\\10.1.8.150\ ' + device + '.txt')
     # connection.send_command('ntp server 0.pool.ntp.org')
     # connection.exit_config_mode()
     connection.send_command('write memory')
