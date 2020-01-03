@@ -9,10 +9,10 @@ import getpass
 
 
 devices = '''
-10.1.8.1
+192.168.1.84
 '''.strip().splitlines()
 
-device_type = 'cisco_asa'
+device_type = 'cisco_ios'
 
 for device in devices:
     print('~' * 79)
@@ -23,9 +23,12 @@ for device in devices:
                                         secret="")
     print(connection.send_command('show clock'))
     #connection.config_mode()
-    connection.send_command('copy running-config tftp:\\10.1.8.150\ ' + device + '.txt')
-    # connection.send_command('ntp server 0.pool.ntp.org')
-    # connection.exit_config_mode()
+   # connection.send_command('copy running-config tftp://192.168.1.68/ ' + device + '.txt')
+    connection.config_mode()
+    connection.send_command_timing('archive')
+    connection.send_command('path tftp://192.168.1.68/CCP/$h-$t')
+    connection.send_command('write-memory')
+    connection.exit_config_mode()
     connection.send_command('write memory')
     connection.disconnect()
 
